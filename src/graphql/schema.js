@@ -18,6 +18,8 @@ const typeDefs = `
     activity(timeRange: String!): PersonActivityReport
     # sugar for activity(timeRange: "today")
     activityToday: PersonActivityReport
+    # sugar for activity(timeRange: "yesterday")
+    activityYesterday: PersonActivityReport
   }
 
   type PersonActivityReport {
