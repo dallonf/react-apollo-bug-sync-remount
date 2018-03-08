@@ -7,7 +7,7 @@ const PagesVisitedView = ({ data }) => {
   if (data.loading) {
     return <p>Loading...</p>;
   } else {
-    const pagesVisited = get(data, ['personById', 'activity', 'pagesVisited']);
+    const pagesVisited = get(data, ['personById', 'activity', 'pagesVisited', 'total',]);
     if (pagesVisited) {
       return <p>Pages Visited: {pagesVisited}</p>;
     } else {
@@ -26,7 +26,7 @@ const PagesVisited = graphql(
       personById(id: "1") {
         id
         activity(timeRange: "today") {
-          pagesVisited
+          pagesVisited { total }
         }
       }
     }
@@ -37,7 +37,7 @@ const TimeSpentView = ({ data }) => {
   if (data.loading) {
     return <p>Loading...</p>;
   } else {
-    const timeSpent = get(data, ['personById', 'activity', 'timeSpent']);
+    const timeSpent = get(data, ['personById', 'activity', 'timeSpent', 'total']);
     if (timeSpent) {
       return <p>Time Spent {timeSpent}</p>;
     } else {
@@ -55,7 +55,7 @@ const TimeSpent = graphql(gql`
     personById(id: "1") {
       id
       activity(timeRange: "today") {
-        timeSpent
+        timeSpent { total }
       }
     }
   }
@@ -123,8 +123,9 @@ export default graphql(
       people {
         id
         name
+        # Prefetch data for PageVisited
         activityToday {
-          pagesVisited
+          pagesVisited { total }
         }
       }
     }

@@ -21,8 +21,12 @@ const typeDefs = `
   }
 
   type PersonActivityReport {
-    pagesVisited: Int
-    timeSpent: Int
+    pagesVisited: PersonActivityReportStat
+    timeSpent: PersonActivityReportStat
+  }
+
+  type PersonActivityReportStat {
+    total: Int
   }
 `;
 
@@ -37,8 +41,8 @@ const resolvers = {
     activityToday: () => ({}),
   },
   PersonActivityReport: {
-    pagesVisited: () => 42,
-    timeSpent: () => 100,
+    pagesVisited: () => ({ total: 42 }),
+    timeSpent: () => ({ total: 100 }),
   },
 };
 
