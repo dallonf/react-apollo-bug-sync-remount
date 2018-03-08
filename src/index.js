@@ -22,6 +22,14 @@ const cache = new InMemoryCache({
           ? toIdValue(dataIdFromObject({ __typename: 'Person', id: args.id }))
           : null,
     },
+    Person: {
+      activity: (person, args) => {
+        const { timeRange } = args;
+        if (timeRange === 'today') {
+          return person.activityToday;
+        }
+      },
+    },
   },
 });
 

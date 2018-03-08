@@ -25,8 +25,7 @@ const PagesVisited = graphql(
     query PagesVisited {
       personById(id: "1") {
         id
-        # activity(timeRange: "today") {
-        activity: activityToday {
+        activity(timeRange: "today") {
           pagesVisited
         }
       }
