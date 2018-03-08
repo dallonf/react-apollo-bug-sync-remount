@@ -1,18 +1,4 @@
-import {
-  GraphQLSchema,
-  GraphQLObjectType,
-  GraphQLID,
-  GraphQLString,
-  GraphQLList,
-} from 'graphql';
-
-const PersonType = new GraphQLObjectType({
-  name: 'Person',
-  fields: {
-    id: { type: GraphQLID },
-    name: { type: GraphQLString },
-  },
-});
+import { makeExecutableSchema } from 'graphql-tools';
 
 const peopleData = [
   { id: 1, name: 'John Smith' },
@@ -20,14 +6,21 @@ const peopleData = [
   { id: 3, name: 'Budd Deey' },
 ];
 
-const QueryType = new GraphQLObjectType({
-  name: 'Query',
-  fields: {
-    people: {
-      type: new GraphQLList(PersonType),
-      resolve: () => peopleData,
-    },
-  },
-});
+const typeDefs = `
+  type Query {
+    people: [Person]
+  }
 
-export const schema = new GraphQLSchema({ query: QueryType });
+  type Person {
+    id: ID
+    name: String
+  }
+`;
+
+const resolvers = {
+  Query: {
+    people: () => peopleData,
+  },
+};
+
+export const schema = makeExecutableSchema({ typeDefs, resolvers });
