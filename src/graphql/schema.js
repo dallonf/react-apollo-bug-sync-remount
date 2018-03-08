@@ -16,6 +16,8 @@ const typeDefs = `
     id: ID
     name: String
     activity(timeRange: String!): PersonActivityReport
+    # sugar for activity(timeRange: "today")
+    activityToday: PersonActivityReport
   }
 
   type PersonActivityReport {
@@ -32,6 +34,7 @@ const resolvers = {
   },
   Person: {
     activity: () => ({}),
+    activityToday: () => ({}),
   },
   PersonActivityReport: {
     pagesVisited: () => 42,

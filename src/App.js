@@ -12,22 +12,27 @@ const PagesVisitedView = ({ data }) => {
       return <p>Pages Visited: {pagesVisited}</p>;
     } else {
       return (
-        <p>
-          No data for pages visited: <pre>{JSON.stringify(data, null, 2)}</pre>
-        </p>
+        <div>
+          <p>No data for pages visited:</p>{' '}
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
       );
     }
   }
 };
-const PagesVisited = graphql(gql`
-  query PagesVisited {
-    personById(id: "1") {
-      activity(timeRange: "today") {
-        pagesVisited
+const PagesVisited = graphql(
+  gql`
+    query PagesVisited {
+      personById(id: "1") {
+        id
+        # activity(timeRange: "today") {
+        activity: activityToday {
+          pagesVisited
+        }
       }
     }
-  }
-`)(PagesVisitedView);
+  `
+)(PagesVisitedView);
 
 const TimeSpentView = ({ data }) => {
   if (data.loading) {
@@ -38,9 +43,10 @@ const TimeSpentView = ({ data }) => {
       return <p>Time Spent {timeSpent}</p>;
     } else {
       return (
-        <p>
-          No data for time spent: <pre>{JSON.stringify(data, null, 2)}</pre>
-        </p>
+        <div>
+          <p>No data for time spent:</p>{' '}
+          <pre>{JSON.stringify(data, null, 2)}</pre>
+        </div>
       );
     }
   }
@@ -48,12 +54,31 @@ const TimeSpentView = ({ data }) => {
 const TimeSpent = graphql(gql`
   query TimeSpent {
     personById(id: "1") {
+      id
       activity(timeRange: "today") {
         timeSpent
       }
     }
   }
 `)(TimeSpentView);
+
+class TimeSpentLoader extends Component {
+  state = { show: false };
+
+  render() {
+    if (this.state.show) {
+      return <TimeSpent />;
+    } else {
+      return (
+        <p>
+          <button onClick={() => this.setState({ show: true })}>
+            Load Time Spent
+          </button>
+        </p>
+      );
+    }
+  }
+}
 
 class App extends Component {
   render() {
@@ -85,7 +110,7 @@ class App extends Component {
               {people.map(person => <li key={person.id}>{person.name}</li>)}
             </ul>
             <PagesVisited />
-            <TimeSpent />
+            <TimeSpentLoader />
           </React.Fragment>
         )}
       </main>
@@ -99,6 +124,9 @@ export default graphql(
       people {
         id
         name
+        activityToday {
+          pagesVisited
+        }
       }
     }
   `
