@@ -1,6 +1,59 @@
-import React, { Component } from "react";
-import { graphql } from "react-apollo";
-import gql from "graphql-tag";
+import React, { Component } from 'react';
+import { graphql } from 'react-apollo';
+import get from 'lodash/get';
+import gql from 'graphql-tag';
+
+const PagesVisitedView = ({ data }) => {
+  if (data.loading) {
+    return <p>Loading...</p>;
+  } else {
+    const pagesVisited = get(data, ['personById', 'activity', 'pagesVisited']);
+    if (pagesVisited) {
+      return <p>Pages Visited: {pagesVisited}</p>;
+    } else {
+      return (
+        <p>
+          No data for pages visited: <pre>{JSON.stringify(data, null, 2)}</pre>
+        </p>
+      );
+    }
+  }
+};
+const PagesVisited = graphql(gql`
+  query PagesVisited {
+    personById(id: "1") {
+      activity(timeRange: "today") {
+        pagesVisited
+      }
+    }
+  }
+`)(PagesVisitedView);
+
+const TimeSpentView = ({ data }) => {
+  if (data.loading) {
+    return <p>Loading...</p>;
+  } else {
+    const timeSpent = get(data, ['personById', 'activity', 'timeSpent']);
+    if (timeSpent) {
+      return <p>Time Spent {timeSpent}</p>;
+    } else {
+      return (
+        <p>
+          No data for time spent: <pre>{JSON.stringify(data, null, 2)}</pre>
+        </p>
+      );
+    }
+  }
+};
+const TimeSpent = graphql(gql`
+  query TimeSpent {
+    personById(id: "1") {
+      activity(timeRange: "today") {
+        timeSpent
+      }
+    }
+  }
+`)(TimeSpentView);
 
 class App extends Component {
   render() {
@@ -15,7 +68,7 @@ class App extends Component {
             reload with the changes.
           </p>
           <p>
-            The code which renders this component lives in{" "}
+            The code which renders this component lives in{' '}
             <code>./src/App.js</code>.
           </p>
           <p>
@@ -27,9 +80,13 @@ class App extends Component {
         {loading ? (
           <p>Loading…</p>
         ) : (
-          <ul>
-            {people.map(person => <li key={person.id}>{person.name}</li>)}
-          </ul>
+          <React.Fragment>
+            <ul>
+              {people.map(person => <li key={person.id}>{person.name}</li>)}
+            </ul>
+            <PagesVisited />
+            <TimeSpent />
+          </React.Fragment>
         )}
       </main>
     );

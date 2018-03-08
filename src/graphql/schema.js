@@ -9,17 +9,33 @@ const peopleData = [
 const typeDefs = `
   type Query {
     people: [Person]
+    personById(id: ID): Person
   }
 
   type Person {
     id: ID
     name: String
+    activity(timeRange: String!): PersonActivityReport
+  }
+
+  type PersonActivityReport {
+    pagesVisited: Int
+    timeSpent: Int
   }
 `;
 
 const resolvers = {
   Query: {
     people: () => peopleData,
+    personById: (q, args, ctx) =>
+      peopleData.find(p => p.id.toString() === args.id),
+  },
+  Person: {
+    activity: () => ({}),
+  },
+  PersonActivityReport: {
+    pagesVisited: () => 42,
+    timeSpent: () => 100,
   },
 };
 
